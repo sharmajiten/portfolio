@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Blog · Jiten Sharma</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">jiten<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Experience</a></li>
+      <li><a href="blog.html" class="active">Blog</a></li>
+      <li><a href="architecture.html">Architecture</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="page-wrapper">
+
+  <div class="blog-header">
+    <div class="section-label">Writing</div>
+    <h1 class="section-title">Blog</h1>
+    <p style="color:var(--muted); max-width:560px; line-height:1.75;">
+      I write about technical program management, distributed systems, career growth,
+      and whatever's been on my mind lately. No fixed schedule — just when something's
+      worth saying.
+    </p>
+  </div>
+
+  <!-- ── FILTER ── -->
+  <div class="blog-tag-filter">
+    <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="tpm">TPM & Leadership</button>
+    <button class="filter-btn" data-filter="tech">Technical</button>
+    <button class="filter-btn" data-filter="life">Life & Misc</button>
+  </div>
+
+  <!-- ── POSTS GRID ── -->
+  <div class="posts-grid" id="posts-grid"></div>
+
+  <!-- ── NEWSLETTER ── -->
+  <div class="newsletter">
+    <h3>Get new posts in your inbox</h3>
+    <p>No spam. Unsubscribe anytime. Usually one or two posts a month.</p>
+    <div class="newsletter-form">
+      <input type="email" placeholder="your@email.com" />
+      <button class="btn btn-primary">Subscribe</button>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>Built with HTML, CSS &amp; a lot of ☕ &nbsp;·&nbsp; <a href="mailto:sharmajiten12@gmail.com">sharmajiten12@gmail.com</a></p>
+</footer>
+
+<!-- POST MODAL -->
+<div class="post-modal-backdrop" id="post-modal-backdrop">
+  <div class="post-modal" id="post-modal" role="dialog" aria-modal="true">
+    <button class="post-modal-close" id="post-modal-close" aria-label="Close">✕</button>
+    <div class="post-modal-banner" id="post-modal-banner"></div>
+    <div class="post-modal-inner">
+      <div class="post-modal-meta" id="post-modal-meta"></div>
+      <h2 class="post-modal-title" id="post-modal-title"></h2>
+      <div class="post-modal-body" id="post-modal-body"></div>
+    </div>
+  </div>
+</div>
+
+<script src="js/posts.js"></script>
+<script>
+  const CATEGORY_LABELS = { tpm: 'TPM & Leadership', tech: 'Technical', life: 'Life & Misc' };
+  const BANNER_CLASSES  = { tpm: 'banner-tpm', tech: 'banner-tech', life: 'banner-life' };
+  const CAT_CLASSES     = { tpm: 'cat-tpm', tech: 'cat-tech', life: 'cat-life' };
+
+  function renderPosts() {
+    const grid = document.getElementById('posts-grid');
+    grid.innerHTML = POSTS.map((p, i) => `
+      <article class="post-card${p.featured ? ' featured-post' : ''}" data-category="${p.category}" onclick="openPost(${i})">
+        <div class="post-banner ${BANNER_CLASSES[p.category]}">${p.emoji}</div>
+        <div class="post-body">
+          ${p.featured ? '<div class="featured-label">Featured</div>' : ''}
+          <div class="blog-meta">
+            <span class="blog-cat ${CAT_CLASSES[p.category]}">${CATEGORY_LABELS[p.category]}</span>
+            <span class="blog-date">${p.date}</span>
+          </div>
+          <h2 class="post-title">${p.title}</h2>
+          <p class="post-excerpt">${p.excerpt}</p>
+          <div class="post-footer">
+            <span class="post-read-time">${p.readTime}</span>
+            <a href="#" class="post-read-more" onclick="openPost(${i}); return false;">${p.featured ? 'Read post →' : 'Read →'}</a>
+          </div>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  function openPost(index) {
+    const p = POSTS[index];
+    const banner = document.getElementById('post-modal-banner');
+    banner.className = `post-modal-banner ${BANNER_CLASSES[p.category]}`;
+    banner.textContent = p.emoji;
+    document.getElementById('post-modal-meta').innerHTML = `
+      <span class="blog-cat ${CAT_CLASSES[p.category]}">${CATEGORY_LABELS[p.category]}</span>
+      <span class="blog-date">${p.date}</span>
+      <span class="post-modal-read-time">${p.readTime}</span>
+    `;
+    document.getElementById('post-modal-title').textContent = p.title;
+    document.getElementById('post-modal-body').innerHTML = p.content;
+    document.getElementById('post-modal-backdrop').classList.add('open');
+    document.getElementById('post-modal-backdrop').scrollTop = 0;
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePost() {
+    document.getElementById('post-modal-backdrop').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('post-modal-close').addEventListener('click', closePost);
+  document.getElementById('post-modal-backdrop').addEventListener('click', e => {
+    if (e.target === e.currentTarget) closePost();
+  });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePost(); });
+
+  renderPosts();
+
+  let activeFilter = 'all';
+  const filterBtns = document.querySelectorAll('.filter-btn');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      filterBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      activeFilter = btn.dataset.filter;
+      document.querySelectorAll('.post-card[data-category]').forEach(post => {
+        post.style.display = activeFilter === 'all' || post.dataset.category === activeFilter ? '' : 'none';
+      });
+    });
+  });
+</script>
+
+</body>
+</html>

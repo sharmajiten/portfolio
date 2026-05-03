@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Architecture · Jiten Sharma</title>
+  <link rel="stylesheet" href="css/styles.css" />
+  <style>
+    .arch-node rect {
+      fill: rgba(255,255,255,0.04);
+      stroke: rgba(255,255,255,0.1);
+      stroke-width: 1.5;
+      transition: all .35s;
+    }
+    .arch-node.active rect {
+      fill: rgba(77,158,255,.12);
+      stroke: #4d9eff;
+      stroke-width: 2;
+      filter: drop-shadow(0 0 12px rgba(77,158,255,.5));
+    }
+    .arch-node.done rect {
+      fill: rgba(74,222,128,.05);
+      stroke: rgba(74,222,128,.35);
+    }
+    .arch-node text { fill: #7d8590; font-family: 'Inter', sans-serif; transition: fill .35s; }
+    .arch-node .node-label { font-size: 11px; font-weight: 700; letter-spacing: -.01em; }
+    .arch-node .node-sub   { font-size: 9.5px; font-weight: 400; }
+    .arch-node .node-icon  { font-size: 18px; }
+    .arch-node.active text { fill: #f0f6fc; }
+    .arch-node.done text   { fill: rgba(74,222,128,.5); }
+
+    .arch-edge {
+      fill: none;
+      stroke: rgba(255,255,255,.07);
+      stroke-width: 1.5;
+      stroke-dasharray: 5 4;
+      marker-end: url(#arr-default);
+    }
+    .arch-edge.active {
+      stroke: #4d9eff;
+      stroke-dasharray: none;
+      filter: drop-shadow(0 0 4px rgba(77,158,255,.6));
+    }
+    .arch-edge.done {
+      stroke: rgba(74,222,128,.3);
+      stroke-dasharray: none;
+    }
+
+    #packet {
+      fill: #4d9eff;
+      filter: drop-shadow(0 0 8px rgba(77,158,255,.8));
+      display: none;
+    }
+    #packet.visible { display: block; }
+
+    #arch-svg { background: rgba(255,255,255,.012); border-radius: 8px; }
+  </style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">jiten<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Experience</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="architecture.html" class="active">Architecture</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="page-wrapper">
+
+  <div class="section-label">System Design</div>
+  <h1 class="section-title">Architecture Animations</h1>
+  <div class="arch-intro">
+    <p>
+      Interactive animations showing what actually happens under the hood — from the
+      moment you click a button to the moment you get a response. Each diagram walks
+      through the full system path, step by step.
+    </p>
+  </div>
+
+  <!-- ── SELECTOR ── -->
+  <div class="arch-gallery" id="arch-gallery"></div>
+
+  <!-- ── ANIMATION STAGE ── -->
+  <div class="arch-stage">
+
+    <div class="arch-stage-header">
+      <div class="arch-stage-title" id="arch-stage-title"></div>
+      <div class="arch-controls">
+        <span class="speed-label">speed:</span>
+        <button class="ctrl-btn" id="btn-slow">0.5×</button>
+        <button class="ctrl-btn active-ctrl" id="btn-normal">1×</button>
+        <button class="ctrl-btn" id="btn-fast">2×</button>
+        <button class="ctrl-btn" id="btn-play">⏸ Pause</button>
+        <button class="ctrl-btn" id="btn-restart">↺ Restart</button>
+      </div>
+    </div>
+
+    <div class="progress-bar-wrap">
+      <div class="progress-bar-fill" id="progress-fill"></div>
+    </div>
+
+    <div class="arch-canvas-area">
+      <svg id="arch-svg" viewBox="0 0 860 420" xmlns="http://www.w3.org/2000/svg" style="width:100%; max-width:860px;">
+        <defs>
+          <marker id="arr-default" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="rgba(255,255,255,0.12)"/>
+          </marker>
+          <marker id="arr-active" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="#4d9eff"/>
+          </marker>
+          <marker id="arr-done" markerWidth="8" markerHeight="6" refX="8" refY="3" orient="auto">
+            <polygon points="0 0, 8 3, 0 6" fill="rgba(74,222,128,0.4)"/>
+          </marker>
+          <pattern id="svg-grid" width="30" height="30" patternUnits="userSpaceOnUse">
+            <circle cx="1" cy="1" r="0.6" fill="rgba(255,255,255,0.04)"/>
+          </pattern>
+        </defs>
+      </svg>
+    </div>
+
+    <div class="arch-step-desc" id="step-desc">
+      <div class="step-number" id="step-num">—</div>
+      <div class="step-text" id="step-text">Animation starts automatically — or click Restart.</div>
+    </div>
+
+    <div class="arch-legend">
+      <div class="legend-item"><div class="legend-dot ld-blue"></div> Active</div>
+      <div class="legend-item"><div class="legend-dot ld-green"></div> Complete</div>
+      <div class="legend-item"><div class="legend-dot ld-gray"></div> Pending</div>
+    </div>
+
+    <div class="step-list" id="step-list"></div>
+
+  </div>
+
+</main>
+
+<footer>
+  <p>Built with HTML, CSS &amp; a lot of ☕ &nbsp;·&nbsp; <a href="mailto:sharmajiten12@gmail.com">sharmajiten12@gmail.com</a></p>
+</footer>
+
+<script src="js/architectures.js"></script>
+<script>
+  // ── STATE ────────────────────────────────────────────────────────
+  let currentArch = null;
+  let currentStep = -1;
+  let paused      = false;
+  let speed       = 1;
+  let timer       = null;
+  const STEP_DURATION_BASE = 1800;
+
+  // ── DOM REFS ─────────────────────────────────────────────────────
+  const svgEl      = document.getElementById('arch-svg');
+  const stepNum    = document.getElementById('step-num');
+  const stepText   = document.getElementById('step-text');
+  const progFill   = document.getElementById('progress-fill');
+  const stepList   = document.getElementById('step-list');
+  const stageTitle = document.getElementById('arch-stage-title');
+  const gallery    = document.getElementById('arch-gallery');
+  const btnPlay    = document.getElementById('btn-play');
+  const btnRestart = document.getElementById('btn-restart');
+  const btnSlow    = document.getElementById('btn-slow');
+  const btnNormal  = document.getElementById('btn-normal');
+  const btnFast    = document.getElementById('btn-fast');
+
+  // Packet element — created once, re-appended on each load
+  const packet = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+  packet.setAttribute('id', 'packet');
+  packet.setAttribute('r', '6');
+
+  // ── GALLERY ──────────────────────────────────────────────────────
+  function renderGallery() {
+    gallery.innerHTML = ARCHITECTURES.map(arch => {
+      if (arch.status === 'live') {
+        return `
+          <div class="arch-preview-card" data-id="${arch.id}" onclick="selectArch('${arch.id}')">
+            <div class="arch-icon">${arch.emoji}</div>
+            <div class="arch-card-title">${arch.title}</div>
+            <div class="arch-card-desc">${arch.cardDesc}</div>
+            <span class="arch-badge">Live</span>
+          </div>`;
+      }
+      return `
+        <div class="coming-card">
+          <div class="arch-icon">${arch.emoji}</div>
+          <div class="arch-card-title">${arch.title}</div>
+          <div class="arch-card-desc">${arch.cardDesc}</div>
+          <span class="arch-badge coming-soon">Coming soon</span>
+        </div>`;
+    }).join('');
+  }
+
+  // ── SELECT ───────────────────────────────────────────────────────
+  function selectArch(id) {
+    const arch = ARCHITECTURES.find(a => a.id === id && a.status === 'live');
+    if (!arch || arch === currentArch) return;
+    document.querySelectorAll('.arch-preview-card').forEach(card => {
+      card.classList.toggle('active', card.dataset.id === id);
+    });
+    loadArchitecture(arch);
+  }
+
+  // ── LOAD ─────────────────────────────────────────────────────────
+  function loadArchitecture(arch) {
+    clearTimeout(timer);
+    currentArch = arch;
+
+    stageTitle.textContent = arch.stageTitle;
+    svgEl.setAttribute('viewBox', arch.viewBox);
+
+    const [,, vw, vh] = arch.viewBox.split(' ');
+    const bgRect = `<rect width="${vw}" height="${vh}" fill="url(#svg-grid)" rx="8"/>`;
+
+    const edges = arch.edges.map(e =>
+      `<path id="${e.id}" class="arch-edge" d="${e.d}" marker-end="url(#arr-default)"/>`
+    ).join('');
+
+    const nodes = arch.nodes.map(n => {
+      const cx = n.w / 2;
+      return `
+        <g id="${n.id}" class="arch-node" transform="translate(${n.x},${n.y})">
+          <rect width="${n.w}" height="${n.h}" rx="8"/>
+          <text x="${cx}" y="28" text-anchor="middle" class="node-icon">${n.icon}</text>
+          <text x="${cx}" y="52" text-anchor="middle" class="node-label">${n.label}</text>
+          <text x="${cx}" y="66" text-anchor="middle" class="node-sub">${n.sub}</text>
+        </g>`;
+    }).join('');
+
+    // Preserve defs, replace everything else
+    const defs = svgEl.querySelector('defs');
+    svgEl.innerHTML = '';
+    svgEl.appendChild(defs);
+    svgEl.insertAdjacentHTML('beforeend', bgRect + edges + nodes);
+    svgEl.appendChild(packet);
+
+    // Rebuild step pills
+    stepList.innerHTML = '';
+    arch.steps.forEach((s, i) => {
+      const pill = document.createElement('div');
+      pill.className = 'step-pill';
+      pill.id = `pill-${i}`;
+      pill.innerHTML = `<div class="step-dot"></div><span>${s.label}</span>`;
+      stepList.appendChild(pill);
+    });
+
+    paused = false;
+    btnPlay.textContent = '⏸ Pause';
+    resetAll();
+    setTimeout(() => restart(), 400);
+  }
+
+  // ── HELPERS ──────────────────────────────────────────────────────
+  function getNodeCenter(nodeId) {
+    const g = document.getElementById(nodeId);
+    const rect = g.querySelector('rect');
+    const [, ox, oy] = g.getAttribute('transform').match(/translate\(([^,]+),\s*([^)]+)\)/);
+    return {
+      x: parseFloat(ox) + parseFloat(rect.getAttribute('width'))  / 2,
+      y: parseFloat(oy) + parseFloat(rect.getAttribute('height')) / 2,
+    };
+  }
+
+  function setNodeState(id, state) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('active', 'done');
+    if (state) el.classList.add(state);
+  }
+
+  function setEdgeState(id, state) {
+    if (!id) return;
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.classList.remove('active', 'done');
+    if (state) el.classList.add(state);
+    const markerMap = { active: 'arr-active', done: 'arr-done' };
+    el.setAttribute('marker-end', `url(#${markerMap[state] || 'arr-default'})`);
+  }
+
+  function setPillState(idx, state) {
+    const pill = document.getElementById(`pill-${idx}`);
+    if (!pill) return;
+    pill.classList.remove('active', 'done');
+    if (state) pill.classList.add(state);
+  }
+
+  // ── PACKET ANIMATION ─────────────────────────────────────────────
+  function animatePacket(fromId, toId, duration) {
+    if (!fromId || !toId) return Promise.resolve();
+    const from = getNodeCenter(fromId);
+    const to   = getNodeCenter(toId);
+    packet.classList.add('visible');
+    packet.setAttribute('cx', from.x);
+    packet.setAttribute('cy', from.y);
+    return new Promise(resolve => {
+      const startTime = performance.now();
+      function frame(now) {
+        const t    = Math.min((now - startTime) / duration, 1);
+        const ease = t < .5 ? 2*t*t : -1+(4-2*t)*t;
+        packet.setAttribute('cx', from.x + (to.x - from.x) * ease);
+        packet.setAttribute('cy', from.y + (to.y - from.y) * ease);
+        if (t < 1) { requestAnimationFrame(frame); }
+        else { packet.classList.remove('visible'); resolve(); }
+      }
+      requestAnimationFrame(frame);
+    });
+  }
+
+  // ── RESET ────────────────────────────────────────────────────────
+  function resetAll() {
+    if (!currentArch) return;
+    currentArch.steps.forEach((s, i) => {
+      setNodeState(s.node, null);
+      if (s.edge) setEdgeState(s.edge, null);
+      setPillState(i, null);
+    });
+    packet.classList.remove('visible');
+    stepNum.textContent  = '—';
+    stepText.innerHTML   = 'Animation starting…';
+    progFill.style.width = '0%';
+  }
+
+  // ── RUN STEP ─────────────────────────────────────────────────────
+  async function runStep(idx) {
+    if (!currentArch) return;
+    const steps = currentArch.steps;
+    if (idx >= steps.length) {
+      timer = setTimeout(() => { if (!paused) restart(); }, 2000 / speed);
+      return;
+    }
+    const step = steps[idx];
+
+    if (idx > 0) {
+      const prev = steps[idx - 1];
+      setNodeState(prev.node, 'done');
+      if (prev.edge) setEdgeState(prev.edge, 'done');
+      setPillState(idx - 1, 'done');
+    }
+
+    if (step.edge) setEdgeState(step.edge, 'active');
+    await animatePacket(step.from, step.to, (STEP_DURATION_BASE * 0.45) / speed);
+
+    setNodeState(step.node, 'active');
+    setPillState(idx, 'active');
+    stepNum.textContent  = step.num;
+    stepText.innerHTML   = step.desc;
+    progFill.style.width = `${((idx + 1) / steps.length) * 100}%`;
+
+    currentStep = idx;
+    timer = setTimeout(() => {
+      if (!paused) runStep(idx + 1);
+      else currentStep = idx + 1;
+    }, (STEP_DURATION_BASE * 0.7) / speed);
+  }
+
+  // ── RESTART ──────────────────────────────────────────────────────
+  function restart() {
+    clearTimeout(timer);
+    resetAll();
+    currentStep = 0;
+    if (!paused) runStep(0);
+  }
+
+  // ── CONTROLS ─────────────────────────────────────────────────────
+  btnPlay.addEventListener('click', () => {
+    paused = !paused;
+    btnPlay.textContent = paused ? '▶ Play' : '⏸ Pause';
+    if (!paused) runStep(currentStep);
+  });
+  btnRestart.addEventListener('click', restart);
+
+  function setSpeed(s, btn) {
+    speed = s;
+    [btnSlow, btnNormal, btnFast].forEach(b => b.classList.remove('active-ctrl'));
+    btn.classList.add('active-ctrl');
+  }
+  btnSlow.addEventListener('click',   () => setSpeed(0.5, btnSlow));
+  btnNormal.addEventListener('click', () => setSpeed(1,   btnNormal));
+  btnFast.addEventListener('click',   () => setSpeed(2,   btnFast));
+
+  // ── INIT ─────────────────────────────────────────────────────────
+  renderGallery();
+  const firstLive = ARCHITECTURES.find(a => a.status === 'live');
+  if (firstLive) {
+    document.querySelector(`[data-id="${firstLive.id}"]`).classList.add('active');
+    loadArchitecture(firstLive);
+  }
+</script>
+</body>
+</html>
