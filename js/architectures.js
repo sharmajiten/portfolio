@@ -122,6 +122,83 @@ const ARCHITECTURES = [
   // ─────────────────────────────────────────────────────────────────
 
   {
+    id: 'nmt-translation',
+    emoji: '🌐',
+    title: 'Language Translation',
+    cardDesc: 'Encoder–decoder, attention, softmax, and the cross-entropy training loop.',
+    status: 'live',
+    stageTitle: '🌐 Neural Machine Translation — Encoder / Decoder Training Loop',
+    viewBox: '0 0 860 420',
+    nodes: [
+      { id: 'node-src',      x: 8,   y: 56,  w: 126, h: 84, icon: '📝', label: 'Source Text',   sub: 'Hallo Welt →' },
+      { id: 'node-embed',    x: 200, y: 56,  w: 150, h: 84, icon: '🔤', label: 'Embedding',     sub: 'Tokens + Positional' },
+      { id: 'node-encoder',  x: 416, y: 56,  w: 150, h: 84, icon: '🧠', label: 'Encoder',       sub: 'Self-Attention ×N' },
+      { id: 'node-decoder',  x: 632, y: 56,  w: 150, h: 84, icon: '🧩', label: 'Decoder',       sub: 'Masked + Cross-Attn' },
+      { id: 'node-softmax',  x: 632, y: 300, w: 150, h: 84, icon: '📊', label: 'Softmax',       sub: 'Vocab Distribution' },
+      { id: 'node-output',   x: 416, y: 300, w: 150, h: 84, icon: '🌍', label: 'Translation',   sub: 'Predicted Tokens' },
+      { id: 'node-loss',     x: 200, y: 300, w: 150, h: 84, icon: '📉', label: 'Cross-Entropy', sub: 'Loss vs Target' },
+      { id: 'node-backprop', x: 8,   y: 300, w: 126, h: 84, icon: '🔁', label: 'Backprop',      sub: 'Gradient Update' },
+    ],
+    edges: [
+      { id: 'edge-0', d: 'M 134 98 L 200 98' },
+      { id: 'edge-1', d: 'M 350 98 L 416 98' },
+      { id: 'edge-2', d: 'M 566 98 L 632 98' },
+      { id: 'edge-3', d: 'M 707 140 L 707 300' },
+      { id: 'edge-4', d: 'M 632 342 L 566 342' },
+      { id: 'edge-5', d: 'M 416 342 L 350 342' },
+      { id: 'edge-6', d: 'M 200 342 L 134 342' },
+      { id: 'edge-7', d: 'M 71 300 L 71 220 L 491 220 L 491 140' },
+    ],
+    steps: [
+      {
+        node: 'node-src', edge: null, from: null, to: null, num: 1,
+        label: 'Source sentence in',
+        desc: '<strong>Source Sentence</strong> — The input sentence in the source language (e.g. German <code>"Hallo Welt"</code>) enters the pipeline. During training it is paired with its reference translation; at inference it arrives on its own.',
+      },
+      {
+        node: 'node-embed', edge: 'edge-0', from: 'node-src', to: 'node-embed', num: 2,
+        label: 'Tokenize & embed',
+        desc: '<strong>Tokenization + Embedding</strong> — The sentence is split into subword tokens (BPE / WordPiece), and each token is mapped to a learned dense vector. Positional encodings are added so the model knows token order — self-attention itself is order-agnostic.',
+      },
+      {
+        node: 'node-encoder', edge: 'edge-1', from: 'node-embed', to: 'node-encoder', num: 3,
+        label: 'Encoder reads source',
+        desc: '<strong>Encoder Stack</strong> — N stacked layers of multi-head <strong>self-attention</strong> + feed-forward networks read the whole source at once, letting every token attend to every other. Output: a sequence of context-rich hidden states capturing the source meaning.',
+      },
+      {
+        node: 'node-decoder', edge: 'edge-2', from: 'node-encoder', to: 'node-decoder', num: 4,
+        label: 'Decoder generates target',
+        desc: '<strong>Decoder Stack</strong> — Produces the target sequence. <strong>Masked self-attention</strong> stops it peeking at future tokens; <strong>cross-attention</strong> lets each target position query the encoder\'s hidden states. In training, teacher forcing feeds the ground-truth previous token.',
+      },
+      {
+        node: 'node-softmax', edge: 'edge-3', from: 'node-decoder', to: 'node-softmax', num: 5,
+        label: 'Project → softmax',
+        desc: '<strong>Output Projection → Softmax</strong> — A linear layer maps each decoder state to logits over the entire target vocabulary; <code>softmax</code> turns them into a probability distribution — e.g. <code>P("World") = 0.82</code>. This is the model\'s predicted next-token probability.',
+      },
+      {
+        node: 'node-output', edge: 'edge-4', from: 'node-softmax', to: 'node-output', num: 6,
+        label: 'Emit predicted tokens',
+        desc: '<strong>Predicted Tokens</strong> — Taking <code>argmax</code> (or beam search at inference) over each distribution yields the output tokens — <code>"Hello World"</code>. During training these predictions are scored against the reference translation.',
+      },
+      {
+        node: 'node-loss', edge: 'edge-5', from: 'node-output', to: 'node-loss', num: 7,
+        label: 'Cross-entropy loss',
+        desc: '<strong>Cross-Entropy Loss</strong> — Measures how far the predicted distribution is from the true target: <code>H = −Σ y·log(ŷ)</code>. Since the target is one-hot, it reduces to <code>−log P(correct token)</code>. A confident, correct guess ≈ 0 loss; a wrong or uncertain one is penalized heavily — this entropy is what drives learning.',
+      },
+      {
+        node: 'node-backprop', edge: 'edge-6', from: 'node-loss', to: 'node-backprop', num: 8,
+        label: 'Backprop the gradients',
+        desc: '<strong>Backpropagation + Optimizer</strong> — Gradients of the loss flow backward through decoder, encoder, and embeddings via the chain rule. An optimizer (e.g. Adam) nudges every weight to reduce the loss on this batch.',
+      },
+      {
+        node: 'node-encoder', edge: 'edge-7', from: 'node-backprop', to: 'node-encoder', num: 9,
+        label: 'Update weights → repeat',
+        desc: '<strong>Training Loop</strong> — The updated encoder & decoder are ready for the next batch. Over many epochs the loss curve falls and translations sharpen. At inference the same encoder → decoder → softmax path runs forward only — no loss, just generation.',
+      },
+    ],
+  },
+
+  {
     id: 'messaging',
     emoji: '💬',
     title: 'Sending a Message',
