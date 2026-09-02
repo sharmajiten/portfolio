@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Jiten Sharma · Resume</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:ital,wght@0,400;0,500;0,600;0,700;0,800&family=JetBrains+Mono:wght@500;600&display=swap');
+
+  :root {
+    --ink: #1b2230;
+    --muted: #5b6472;
+    --line: #dde1e7;
+    --accent: #2461d6;
+    --paper: #ffffff;
+    --page-w: 800px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { background: #eceef2; }
+  body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--ink);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── toolbar (screen only) ── */
+  .toolbar {
+    position: sticky; top: 0; z-index: 10;
+    background: #161b22;
+    color: #f0f6fc;
+    padding: .85rem 1.5rem;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 1rem; flex-wrap: wrap;
+  }
+  .toolbar a { color: #9fb8e8; font-size: .85rem; font-weight: 500; text-decoration: none; }
+  .toolbar a:hover { color: #fff; }
+  .toolbar-actions { display: flex; gap: .6rem; }
+  .btn-print {
+    background: var(--accent); color: #fff; border: none;
+    font-family: inherit; font-size: .85rem; font-weight: 600;
+    padding: .55rem 1.1rem; border-radius: 7px; cursor: pointer;
+    transition: background .15s;
+  }
+  .btn-print:hover { background: #1d4fb8; }
+
+  /* ── page ── */
+  .page {
+    max-width: var(--page-w);
+    margin: 2.5rem auto 4rem;
+    background: var(--paper);
+    padding: 3rem 3.25rem;
+    border-radius: 10px;
+    box-shadow: 0 1px 3px rgba(0,0,0,.08), 0 12px 40px rgba(0,0,0,.10);
+  }
+
+  header.res-head {
+    display: flex; align-items: flex-start; justify-content: space-between;
+    flex-wrap: wrap; gap: 1rem;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 1.1rem; margin-bottom: 1.4rem;
+  }
+  .res-name { font-size: 1.9rem; font-weight: 800; letter-spacing: -.02em; }
+  .res-title { font-size: .95rem; color: var(--accent); font-weight: 600; margin-top: .2rem; }
+  .res-contact {
+    text-align: right; font-size: .82rem; color: var(--muted);
+    display: flex; flex-direction: column; gap: .2rem;
+  }
+  .res-contact a { color: var(--muted); text-decoration: none; }
+  .res-contact a:hover { color: var(--accent); }
+
+  .res-summary { font-size: .88rem; color: var(--muted); margin-bottom: 1.6rem; line-height: 1.7; }
+
+  section.res-section { margin-bottom: 1.5rem; }
+  .res-section-title {
+    font-size: .72rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .12em; color: var(--accent);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: .35rem; margin-bottom: .85rem;
+  }
+
+  .res-item { margin-bottom: 1.05rem; }
+  .res-item:last-child { margin-bottom: 0; }
+  .res-item-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    flex-wrap: wrap; gap: .3rem .75rem;
+  }
+  .res-role { font-size: .92rem; font-weight: 700; }
+  .res-company { font-size: .85rem; color: var(--accent); font-weight: 600; }
+  .res-period { font-size: .76rem; color: var(--muted); font-family: 'JetBrains Mono', monospace; white-space: nowrap; }
+  .res-desc { font-size: .82rem; color: var(--muted); margin-top: .35rem; line-height: 1.65; }
+  .res-tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .5rem; }
+  .res-tag {
+    font-size: .68rem; font-weight: 600; color: var(--muted);
+    background: #f3f5f8; border: 1px solid var(--line);
+    padding: .12rem .5rem; border-radius: 4px;
+  }
+
+  .res-skills-grid {
+    display: grid; grid-template-columns: repeat(2, 1fr);
+    gap: .9rem 2rem;
+  }
+  .res-skill-group-title {
+    font-size: .74rem; font-weight: 700; color: var(--ink);
+    margin-bottom: .3rem;
+  }
+  .res-skill-list { font-size: .8rem; color: var(--muted); line-height: 1.6; }
+
+  .res-edu-item { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; font-size: .85rem; }
+  .res-edu-item + .res-edu-item { margin-top: .5rem; }
+
+  @media (max-width: 640px) {
+    .page { padding: 2rem 1.4rem; margin: 1rem auto 3rem; border-radius: 0; }
+    .res-contact { text-align: left; }
+    header.res-head { flex-direction: column; }
+    .res-skills-grid { grid-template-columns: 1fr; }
+  }
+
+  /* ── print ── */
+  @media print {
+    @page { margin: 0.5in; }
+    html, body { background: #fff; }
+    .toolbar { display: none; }
+    .page { box-shadow: none; margin: 0; padding: 0; border-radius: 0; max-width: 100%; }
+    .res-item { break-inside: avoid; }
+    section.res-section { break-inside: avoid; }
+  }
+</style>
+</head>
+<body>
+
+<div class="toolbar no-print">
+  <a href="index.html">← Back to site</a>
+  <div class="toolbar-actions">
+    <button class="btn-print" onclick="window.print()">Download / Print PDF</button>
+  </div>
+</div>
+
+<div class="page">
+
+  <header class="res-head">
+    <div>
+      <div class="res-name">Jiten Sharma</div>
+      <div class="res-title">Principal Engineering Program Manager</div>
+    </div>
+    <div class="res-contact">
+      <a href="mailto:sharmajiten12@gmail.com">sharmajiten12@gmail.com</a>
+      <a href="tel:4088231116">408-823-1116</a>
+      <span>San Jose, CA</span>
+    </div>
+  </header>
+
+  <p class="res-summary">
+    12 years across IoT, mobile, cloud, and creative software — from UI code to leading cross-functional
+    engineering programs at Adobe. PMP-certified program manager who turns ambiguous technical initiatives
+    into shipped products, and engineering teams into high-performing ones.
+  </p>
+
+  <section class="res-section">
+    <div class="res-section-title">Experience</div>
+
+    <div class="res-item">
+      <div class="res-item-head">
+        <span class="res-role">Principal Engineering Program Manager</span>
+        <span class="res-period">May 2022 – Present</span>
+      </div>
+      <div class="res-company">Adobe · San Jose, CA</div>
+      <p class="res-desc">
+        Develop and implement software development strategies that align with organizational goals,
+        prioritizing project objectives and deliverables across engineering orgs. Serve as the primary
+        liaison between engineering teams, product management, and other departments — ensuring clear
+        communication of project status, risks, and timelines. Provide technical guidance on architectural
+        decisions, best practices, coding standards, and security protocols. Drive continuous improvement
+        through Agile methodologies and CI/CD practices, and proactively manage technical debt and risk
+        mitigation strategies.
+      </p>
+      <div class="res-tags">
+        <span class="res-tag">Strategic Planning</span>
+        <span class="res-tag">Program Management</span>
+        <span class="res-tag">CI/CD</span>
+        <span class="res-tag">Stakeholder Communication</span>
+        <span class="res-tag">Risk Management</span>
+        <span class="res-tag">Technical Oversight</span>
+        <span class="res-tag">Agile</span>
+      </div>
+    </div>
+
+    <div class="res-item">
+      <div class="res-item-head">
+        <span class="res-role">Software Engineering Manager</span>
+        <span class="res-period">Dec 2018 – May 2022</span>
+      </div>
+      <div class="res-company">View, Inc. · Milpitas, CA</div>
+      <p class="res-desc">
+        Led, mentored, and developed a team of software engineers, overseeing hiring, performance reviews,
+        and professional development. Provided architectural guidance and high-level design decisions for
+        scalable, maintainable software solutions. Led end-to-end development and deployment of multiple
+        mobile applications across iOS and Android, collaborating closely with UX/UI designers for intuitive
+        interfaces. Managed third-party integrations (payment gateways, social logins, analytics) and set up
+        Firebase-based monitoring and analytics to drive data-informed improvements.
+      </p>
+      <div class="res-tags">
+        <span class="res-tag">iOS & Android</span>
+        <span class="res-tag">Mobile Apps</span>
+        <span class="res-tag">Firebase</span>
+        <span class="res-tag">Team Leadership</span>
+        <span class="res-tag">App Store Compliance</span>
+        <span class="res-tag">Architecture</span>
+        <span class="res-tag">3rd-Party APIs</span>
+      </div>
+    </div>
+
+    <div class="res-item">
+      <div class="res-item-head">
+        <span class="res-role">Technical Program Manager</span>
+        <span class="res-period">Aug 2017 – Dec 2018</span>
+      </div>
+      <div class="res-company">Lunera Lighting · Santa Clara, CA</div>
+      <p class="res-desc">
+        Led a cross-functional team of 23 members spanning Mobile Apps, Cloud, DevOps, and QA while
+        providing product training to customers. Coordinated between Cloud and Firmware teams to ensure
+        IoT product UI functioned as intended, and bridged offshore and on-site teams to deliver new
+        features against design documents. Drove execution plans across three concurrent project tracks
+        and built deep expertise in indoor real-time location systems (RTLS) for asset tracking and wayfinding.
+      </p>
+      <div class="res-tags">
+        <span class="res-tag">IoT</span>
+        <span class="res-tag">RTLS</span>
+        <span class="res-tag">Cloud</span>
+        <span class="res-tag">DevOps</span>
+        <span class="res-tag">Cross-functional Leadership</span>
+        <span class="res-tag">Firmware Coordination</span>
+      </div>
+    </div>
+
+    <div class="res-item">
+      <div class="res-item-head">
+        <span class="res-role">UI Engineer</span>
+        <span class="res-period">Jun 2016 – Jun 2017</span>
+      </div>
+      <div class="res-company">Art.com · Emeryville, CA</div>
+      <p class="res-desc">
+        Conceptualized and developed optimized mobile applications within Art.com's brand ecosystem.
+        Collaborated with the creative team to align objectives and finalize content for each buying funnel
+        page, and partnered with UX designers to deploy interactive interfaces. Utilized complex media queries
+        for cross-device compatibility and led story-level delivery within Agile sprints alongside offshore
+        development teams.
+      </p>
+      <div class="res-tags">
+        <span class="res-tag">HTML5</span>
+        <span class="res-tag">CSS3</span>
+        <span class="res-tag">JavaScript</span>
+        <span class="res-tag">jQuery</span>
+        <span class="res-tag">AJAX</span>
+        <span class="res-tag">Gulp</span>
+        <span class="res-tag">Jenkins</span>
+        <span class="res-tag">Agile</span>
+      </div>
+    </div>
+
+    <div class="res-item">
+      <div class="res-item-head">
+        <span class="res-role">UI Developer</span>
+        <span class="res-period">Sep 2015 – Jun 2016</span>
+      </div>
+      <div class="res-company">Relevance Lab · San Jose, CA</div>
+      <p class="res-desc">
+        Developed UI to client requirements and assisted the DevOps team with deployment processes and
+        cookbook development. Supported setup of OpenStack cloud on bare-metal servers and provided
+        technical operations support for core Relevance Lab products, including troubleshooting of
+        application and infrastructure issues.
+      </p>
+      <div class="res-tags">
+        <span class="res-tag">HTML5</span>
+        <span class="res-tag">JavaScript</span>
+        <span class="res-tag">CSS3</span>
+        <span class="res-tag">OpenStack</span>
+        <span class="res-tag">Chef</span>
+        <span class="res-tag">GitHub</span>
+        <span class="res-tag">DevOps</span>
+      </div>
+    </div>
+
+    <div class="res-item">
+      <div class="res-item-head">
+        <span class="res-role">UI Developer</span>
+        <span class="res-period">Sep 2014 – Jun 2015</span>
+      </div>
+      <div class="res-company">Innova Solutions · Santa Clara, CA</div>
+      <p class="res-desc">
+        Designed and developed the UI for a private cloud OpenStack platform using HTML5, JavaScript,
+        and CSS with responsive design for various device sizes. Deployed a 3-node private cloud
+        architecture on Linux, created internal and external OpenStack networks, and wrote shell scripts
+        for full private cloud installation. Performed CLI-based troubleshooting on the private cloud.
+      </p>
+      <div class="res-tags">
+        <span class="res-tag">HTML5</span>
+        <span class="res-tag">jQuery</span>
+        <span class="res-tag">CSS3</span>
+        <span class="res-tag">OpenStack</span>
+        <span class="res-tag">Linux</span>
+        <span class="res-tag">Shell Scripting</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="res-section">
+    <div class="res-section-title">Skills & Tools</div>
+    <div class="res-skills-grid">
+      <div>
+        <div class="res-skill-group-title">Leadership & Strategy</div>
+        <div class="res-skill-list">Portfolio Management, Executive Alignment, Org Design, OKR Definition & Tracking, Budget Ownership, Headcount Planning, Change Management, TPM Team Building</div>
+      </div>
+      <div>
+        <div class="res-skill-group-title">Program Execution</div>
+        <div class="res-skill-list">Program Governance, Scaled Agile / SAFe, Risk & Dependency Mgmt, Milestone Tracking, RAID Logs, Metrics & Dashboards, Process Optimization, Operational Excellence</div>
+      </div>
+      <div>
+        <div class="res-skill-group-title">Technical Domains</div>
+        <div class="res-skill-list">Cloud Infrastructure, AI / ML Programs, Platform Engineering, API & Microservices, Security & Compliance, Developer Experience, FinOps, CI/CD & DevOps</div>
+      </div>
+      <div>
+        <div class="res-skill-group-title">Tools & Platforms</div>
+        <div class="res-skill-list">Jira, Linear, Confluence, Aha!, Notion, Power BI, Datadog, GitHub / GitLab, Slack, G Suite / M365</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="res-section">
+    <div class="res-section-title">Education</div>
+    <div class="res-edu-item">
+      <span><strong>B.S. in Biological Sciences</strong> — University of California, Davis</span>
+    </div>
+  </section>
+
+  <section class="res-section">
+    <div class="res-section-title">Certification</div>
+    <div class="res-edu-item">
+      <span><strong>Project Management Professional (PMP)</strong></span>
+      <span class="res-period">Project Management Institute</span>
+    </div>
+  </section>
+
+</div>
+
+</body>
+</html>
