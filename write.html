@@ -184,10 +184,28 @@ Use **bold**, *italic*, and `code` inline."></textarea>
     <div class="preview-card-slot" id="preview-card-slot"></div>
 
     <div class="output-box">
-      <div class="panel-title">Publish Code</div>
+      <div class="panel-title">Publish Live</div>
+      <div class="field">
+        <label for="token-input">GitHub token (fine-grained, Contents: read/write on this repo only)</label>
+        <input type="password" id="token-input" placeholder="github_pat_…" autocomplete="off" />
+      </div>
+      <div class="checkbox-row">
+        <input type="checkbox" id="remember-token" />
+        <label for="remember-token">Remember token in this browser (localStorage)</label>
+      </div>
+      <div class="md-help" style="margin-bottom:1rem;">
+        Create one at <code>github.com/settings/personal-access-tokens/new</code> — scope it to
+        the <code>sharmajiten/portfolio</code> repository only, with <code>Contents: Read and write</code>
+        permission. Nothing else. The token is only ever sent directly from your browser to GitHub's API —
+        it never touches this page's server (there isn't one).
+      </div>
+      <button class="btn btn-primary" id="btn-publish" style="width:100%; justify-content:center;">Post →  Publish to Live Site</button>
+      <div class="status-msg" id="publish-status"></div>
+
+      <div class="panel-title" style="margin-top:1.75rem;">Publish Code (manual fallback)</div>
       <textarea id="code-output" readonly spellcheck="false"></textarea>
       <div class="output-actions">
-        <button class="btn btn-primary" id="btn-copy">Copy Post Code</button>
+        <button class="btn btn-secondary" id="btn-copy">Copy Post Code</button>
         <button class="btn btn-secondary" id="btn-download">Download Updated posts.js</button>
       </div>
       <div class="status-msg" id="status-msg"></div>
@@ -315,6 +333,83 @@ Use **bold**, *italic*, and `code` inline."></textarea>
     statusMsg.textContent = msg;
     statusMsg.className = 'status-msg' + (isErr ? ' err' : '');
   }
+
+  const GH_OWNER  = 'sharmajiten';
+  const GH_REPO   = 'portfolio';
+  const GH_PATH   = 'js/posts.js';
+  const GH_BRANCH = 'main';
+  const GH_MARKER = 'const POSTS = [';
+
+  const tokenInput     = document.getElementById('token-input');
+  const rememberToken  = document.getElementById('remember-token');
+  const btnPublish     = document.getElementById('btn-publish');
+  const publishStatus  = document.getElementById('publish-status');
+
+  const savedToken = localStorage.getItem('gh_pat');
+  if (savedToken) { tokenInput.value = savedToken; rememberToken.checked = true; }
+
+  function b64EncodeUtf8(str) { return btoa(unescape(encodeURIComponent(str))); }
+  function b64DecodeUtf8(str) { return decodeURIComponent(escape(atob(str.replace(/\n/g, '')))); }
+
+  function showPublishStatus(msg, isErr) {
+    publishStatus.textContent = msg;
+    publishStatus.className = 'status-msg' + (isErr ? ' err' : '');
+  }
+
+  btnPublish.addEventListener('click', async () => {
+    const token = tokenInput.value.trim();
+    if (!token) { showPublishStatus('Paste a GitHub token first.', true); return; }
+    if (!titleInput.value.trim()) { showPublishStatus('Give the post a title first.', true); return; }
+
+    if (rememberToken.checked) localStorage.setItem('gh_pat', token);
+    else localStorage.removeItem('gh_pat');
+
+    btnPublish.disabled = true;
+    showPublishStatus('Reading current posts.js from GitHub…');
+
+    try {
+      const apiBase = `https://api.github.com/repos/${GH_OWNER}/${GH_REPO}/contents/${GH_PATH}`;
+      const headers = {
+        Authorization: `Bearer ${token}`,
+        Accept: 'application/vnd.github+json',
+      };
+
+      const getRes = await fetch(`${apiBase}?ref=${GH_BRANCH}`, { headers });
+      if (!getRes.ok) {
+        const body = await getRes.json().catch(() => ({}));
+        throw new Error(`Read failed (${getRes.status}): ${body.message || getRes.statusText}`);
+      }
+      const getData = await getRes.json();
+      const original = b64DecodeUtf8(getData.content);
+
+      const idx = original.indexOf(GH_MARKER);
+      if (idx === -1) throw new Error('Could not find "const POSTS = [" in posts.js');
+      const insertAt = idx + GH_MARKER.length;
+      const updated = original.slice(0, insertAt) + '\n' + buildCode() + original.slice(insertAt);
+
+      showPublishStatus('Committing to GitHub…');
+      const putRes = await fetch(apiBase, {
+        method: 'PUT',
+        headers: { ...headers, 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          message: `Add blog post: ${titleInput.value.trim()}`,
+          content: b64EncodeUtf8(updated),
+          sha: getData.sha,
+          branch: GH_BRANCH,
+        }),
+      });
+      if (!putRes.ok) {
+        const body = await putRes.json().catch(() => ({}));
+        throw new Error(`Write failed (${putRes.status}): ${body.message || putRes.statusText}`);
+      }
+
+      showPublishStatus('Published! Pushed to GitHub — Amplify will redeploy in a minute or two.');
+    } catch (e) {
+      showPublishStatus(e.message || 'Publish failed.', true);
+    } finally {
+      btnPublish.disabled = false;
+    }
+  });
 
   document.getElementById('btn-copy').addEventListener('click', async () => {
     try {
