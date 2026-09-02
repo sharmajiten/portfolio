@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Write · Jiten Sharma</title>
+<link rel="stylesheet" href="css/styles.css" />
+<style>
+  .write-wrapper {
+    max-width: 1300px; margin: 0 auto;
+    padding: calc(var(--nav-height) + 2.5rem) 5% 4rem;
+    display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem;
+  }
+  @media (max-width: 980px) { .write-wrapper { grid-template-columns: 1fr; } }
+
+  .panel-title {
+    font-size: .7rem; font-weight: 700; text-transform: uppercase;
+    letter-spacing: .14em; color: var(--accent); margin-bottom: 1rem;
+    font-family: var(--mono);
+  }
+  .panel-title::before { content: '// '; opacity: .5; }
+
+  .field { margin-bottom: 1.1rem; }
+  .field label {
+    display: block; font-size: .78rem; font-weight: 600;
+    color: var(--muted); margin-bottom: .4rem; letter-spacing: .02em;
+  }
+  .field input[type="text"],
+  .field input[type="date"],
+  .field select,
+  .field textarea {
+    width: 100%;
+    background: rgba(255,255,255,.04);
+    border: 1px solid var(--border-bright);
+    color: var(--text);
+    font-family: var(--font);
+    font-size: .88rem;
+    padding: .6rem .8rem;
+    border-radius: var(--radius);
+    backdrop-filter: blur(8px);
+    transition: border-color .2s;
+  }
+  .field input:focus, .field select:focus, .field textarea:focus {
+    outline: none; border-color: rgba(77,158,255,.5);
+    box-shadow: 0 0 0 3px rgba(77,158,255,.08);
+  }
+  .field textarea { resize: vertical; line-height: 1.6; }
+  #content-input { min-height: 260px; font-family: var(--mono); font-size: .82rem; }
+  #excerpt-input { min-height: 70px; }
+
+  .field-row { display: flex; gap: 1rem; }
+  .field-row .field { flex: 1; }
+
+  .checkbox-row { display: flex; align-items: center; gap: .5rem; margin-bottom: 1.1rem; }
+  .checkbox-row input { width: 16px; height: 16px; accent-color: var(--accent); }
+  .checkbox-row label { font-size: .82rem; color: var(--muted); }
+
+  .md-help {
+    font-size: .74rem; color: var(--muted); margin-top: .4rem;
+    font-family: var(--mono); line-height: 1.6;
+  }
+  .md-help code { color: var(--accent-vivid); }
+
+  .sticky-preview { position: sticky; top: calc(var(--nav-height) + 1.5rem); }
+
+  .preview-card-slot { max-width: 400px; margin-bottom: 1.5rem; }
+  .preview-card-slot .post-card { cursor: default; }
+  .preview-card-slot .post-card:hover { transform: none; }
+
+  .output-box {
+    margin-top: 1.5rem;
+  }
+  #code-output {
+    width: 100%; min-height: 200px;
+    background: #0a0d13; border: 1px solid var(--border-bright);
+    color: var(--accent-vivid); font-family: var(--mono); font-size: .76rem;
+    line-height: 1.6; padding: 1rem; border-radius: var(--radius);
+    white-space: pre; overflow: auto;
+  }
+  .output-actions { display: flex; gap: .75rem; margin-top: .85rem; flex-wrap: wrap; }
+  .status-msg {
+    font-size: .78rem; color: var(--accent-green); margin-top: .6rem;
+    font-family: var(--mono); min-height: 1.2em;
+  }
+  .status-msg.err { color: var(--accent-orange); }
+
+  .empty-note {
+    color: var(--muted); font-size: .85rem; padding: 2rem 0; text-align: center;
+    border: 1px dashed var(--border); border-radius: var(--radius-lg);
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-orbs">
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+  <div class="orb orb-3"></div>
+</div>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="nav-logo">jiten<span>.</span></a>
+    <ul class="nav-links">
+      <li><a href="index.html">Experience</a></li>
+      <li><a href="blog.html">Blog</a></li>
+      <li><a href="architecture.html">Architecture</a></li>
+      <li><a href="resume.html">Resume</a></li>
+    </ul>
+  </div>
+</nav>
+
+<main class="write-wrapper">
+
+  <!-- ── FORM ── -->
+  <div>
+    <div class="panel-title">New Post</div>
+
+    <div class="field">
+      <label for="title-input">Title</label>
+      <input type="text" id="title-input" placeholder="Why I Started Running at 30" />
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="category-input">Category</label>
+        <select id="category-input">
+          <option value="tpm">TPM & Leadership</option>
+          <option value="tech">Technical</option>
+          <option value="life">Life & Misc</option>
+        </select>
+      </div>
+      <div class="field">
+        <label for="date-input">Date</label>
+        <input type="date" id="date-input" />
+      </div>
+    </div>
+
+    <div class="field-row">
+      <div class="field">
+        <label for="emoji-input">Emoji</label>
+        <input type="text" id="emoji-input" placeholder="🏃" maxlength="4" />
+      </div>
+      <div class="field">
+        <label for="readtime-input">Read time</label>
+        <input type="text" id="readtime-input" placeholder="5 min read" />
+      </div>
+    </div>
+
+    <div class="checkbox-row">
+      <input type="checkbox" id="featured-input" />
+      <label for="featured-input">Feature this post at the top of the blog</label>
+    </div>
+
+    <div class="field">
+      <label for="excerpt-input">Excerpt (shown on the card)</label>
+      <textarea id="excerpt-input" placeholder="One or two sentences that hook the reader."></textarea>
+    </div>
+
+    <div class="field">
+      <label for="content-input">Content</label>
+      <textarea id="content-input" placeholder="## A Heading
+
+Write a paragraph here. Leave a blank line between paragraphs.
+
+- Bullet point one
+- Bullet point two
+
+Use **bold**, *italic*, and `code` inline."></textarea>
+      <div class="md-help">
+        <code>## text</code> → heading &nbsp;·&nbsp;
+        blank line → new paragraph &nbsp;·&nbsp;
+        <code>- text</code> → bullet list &nbsp;·&nbsp;
+        <code>**bold**</code> &nbsp;·&nbsp;
+        <code>*italic*</code> &nbsp;·&nbsp;
+        <code>`code`</code>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── PREVIEW + OUTPUT ── -->
+  <div class="sticky-preview">
+    <div class="panel-title">Live Preview</div>
+    <div class="preview-card-slot" id="preview-card-slot"></div>
+
+    <div class="output-box">
+      <div class="panel-title">Publish Code</div>
+      <textarea id="code-output" readonly spellcheck="false"></textarea>
+      <div class="output-actions">
+        <button class="btn btn-primary" id="btn-copy">Copy Post Code</button>
+        <button class="btn btn-secondary" id="btn-download">Download Updated posts.js</button>
+      </div>
+      <div class="status-msg" id="status-msg"></div>
+    </div>
+  </div>
+
+</main>
+
+<footer>
+  <p>Authoring tool · not linked from the public site &nbsp;·&nbsp; <a href="blog.html">Back to blog</a></p>
+</footer>
+
+<script>
+  const CATEGORY_LABELS = { tpm: 'TPM & Leadership', tech: 'Technical', life: 'Life & Misc' };
+  const BANNER_CLASSES  = { tpm: 'banner-tpm', tech: 'banner-tech', life: 'banner-life' };
+  const CAT_CLASSES     = { tpm: 'cat-tpm', tech: 'cat-tech', life: 'cat-life' };
+
+  const titleInput    = document.getElementById('title-input');
+  const categoryInput = document.getElementById('category-input');
+  const dateInput     = document.getElementById('date-input');
+  const emojiInput    = document.getElementById('emoji-input');
+  const readTimeInput = document.getElementById('readtime-input');
+  const featuredInput = document.getElementById('featured-input');
+  const excerptInput  = document.getElementById('excerpt-input');
+  const contentInput  = document.getElementById('content-input');
+  const previewSlot   = document.getElementById('preview-card-slot');
+  const codeOutput    = document.getElementById('code-output');
+  const statusMsg     = document.getElementById('status-msg');
+
+  dateInput.valueAsDate = new Date();
+
+  function formatDate(iso) {
+    if (!iso) return '';
+    const [y, m, d] = iso.split('-').map(Number);
+    return new Date(y, m - 1, d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  }
+
+  function inlineMd(s) {
+    return s
+      .replace(/`([^`]+)`/g, '<code>$1</code>')
+      .replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>')
+      .replace(/\*([^*]+)\*/g, '<em>$1</em>');
+  }
+
+  function mdToHtml(md) {
+    const blocks = md.trim().split(/\n\s*\n/).filter(b => b.trim());
+    return blocks.map(block => {
+      block = block.trim();
+      if (block.startsWith('## ')) return `<h3>${inlineMd(block.slice(3).trim())}</h3>`;
+      const lines = block.split('\n').map(l => l.trim());
+      if (lines.every(l => l.startsWith('- '))) {
+        return `<ul>${lines.map(l => `<li>${inlineMd(l.slice(2).trim())}</li>`).join('')}</ul>`;
+      }
+      return `<p>${inlineMd(lines.join(' '))}</p>`;
+    }).join('\n      ');
+  }
+
+  function estimateReadTime(text) {
+    const words = text.trim().split(/\s+/).filter(Boolean).length;
+    return `${Math.max(1, Math.round(words / 200))} min read`;
+  }
+
+  function currentPost() {
+    return {
+      title: titleInput.value.trim() || 'Untitled Post',
+      category: categoryInput.value,
+      date: formatDate(dateInput.value) || 'Undated',
+      excerpt: excerptInput.value.trim(),
+      readTime: readTimeInput.value.trim() || estimateReadTime(contentInput.value),
+      emoji: emojiInput.value.trim() || '📝',
+      featured: featuredInput.checked,
+      contentHtml: mdToHtml(contentInput.value || ' '),
+    };
+  }
+
+  function renderPreview() {
+    const p = currentPost();
+    previewSlot.innerHTML = `
+      <article class="post-card${p.featured ? ' featured-post' : ''}">
+        <div class="post-banner ${BANNER_CLASSES[p.category]}">${p.emoji}</div>
+        <div class="post-body">
+          ${p.featured ? '<div class="featured-label">Featured</div>' : ''}
+          <div class="blog-meta">
+            <span class="blog-cat ${CAT_CLASSES[p.category]}">${CATEGORY_LABELS[p.category]}</span>
+            <span class="blog-date">${p.date}</span>
+          </div>
+          <h2 class="post-title">${p.title}</h2>
+          <p class="post-excerpt">${p.excerpt || '<em style="color:var(--muted)">No excerpt yet…</em>'}</p>
+          <div class="post-footer">
+            <span class="post-read-time">${p.readTime}</span>
+            <span class="post-read-more">${p.featured ? 'Read post →' : 'Read →'}</span>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function buildCode() {
+    const p = currentPost();
+    return `  {
+    title: ${JSON.stringify(p.title)},
+    category: ${JSON.stringify(p.category)},
+    date: ${JSON.stringify(p.date)},
+    excerpt: ${JSON.stringify(p.excerpt)},
+    readTime: ${JSON.stringify(p.readTime)},
+    emoji: ${JSON.stringify(p.emoji)},
+    featured: ${p.featured},
+    content: \`
+      ${p.contentHtml}
+    \`
+  },`;
+  }
+
+  function refresh() {
+    renderPreview();
+    codeOutput.value = buildCode();
+  }
+
+  [titleInput, categoryInput, dateInput, emojiInput, readTimeInput, excerptInput, contentInput].forEach(el => {
+    el.addEventListener('input', refresh);
+  });
+  featuredInput.addEventListener('change', refresh);
+
+  function showStatus(msg, isErr) {
+    statusMsg.textContent = msg;
+    statusMsg.className = 'status-msg' + (isErr ? ' err' : '');
+  }
+
+  document.getElementById('btn-copy').addEventListener('click', async () => {
+    try {
+      await navigator.clipboard.writeText(codeOutput.value);
+      showStatus('Copied — paste it at the top of the POSTS array in js/posts.js');
+    } catch {
+      codeOutput.select();
+      document.execCommand('copy');
+      showStatus('Copied — paste it at the top of the POSTS array in js/posts.js');
+    }
+  });
+
+  document.getElementById('btn-download').addEventListener('click', async () => {
+    try {
+      const res = await fetch('js/posts.js', { cache: 'no-store' });
+      if (!res.ok) throw new Error('fetch failed');
+      const original = await res.text();
+      const marker = 'const POSTS = [';
+      const idx = original.indexOf(marker);
+      if (idx === -1) throw new Error('marker not found');
+      const insertAt = idx + marker.length;
+      const updated = original.slice(0, insertAt) + '\n' + buildCode() + original.slice(insertAt);
+      const blob = new Blob([updated], { type: 'text/javascript' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'posts.js';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showStatus('Downloaded posts.js — replace js/posts.js in the project with this file');
+    } catch (e) {
+      showStatus('Could not fetch js/posts.js from this page (serve the site over http/https, not file://). Use "Copy Post Code" instead.', true);
+    }
+  });
+
+  refresh();
+</script>
+
+</body>
+</html>
