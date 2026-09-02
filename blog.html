@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Blog · Jiten Sharma</title>
+  <title>Blog · Jiten Sharma, AI TPM</title>
   <link rel="stylesheet" href="css/styles.css" />
 </head>
 <body>
@@ -16,7 +16,7 @@
 
 <nav>
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">jiten<span>.</span></a>
+    <a href="index.html" class="nav-logo">jiten<span>.</span><span class="nav-ai-badge">AI TPM</span></a>
     <ul class="nav-links">
       <li><a href="index.html">Experience</a></li>
       <li><a href="blog.html" class="active">Blog</a></li>
@@ -32,15 +32,16 @@
     <div class="section-label">Writing</div>
     <h1 class="section-title">Blog</h1>
     <p style="color:var(--muted); max-width:560px; line-height:1.75;">
-      I write about technical program management, distributed systems, career growth,
-      and whatever's been on my mind lately. No fixed schedule — just when something's
-      worth saying.
+      I write about AI and applied ML program management, distributed systems, TPM
+      leadership, career growth, and whatever's been on my mind lately. No fixed
+      schedule — just when something's worth saying.
     </p>
   </div>
 
   <!-- ── FILTER ── -->
   <div class="blog-tag-filter">
     <button class="filter-btn active" data-filter="all">All</button>
+    <button class="filter-btn" data-filter="ai">AI & ML</button>
     <button class="filter-btn" data-filter="tpm">TPM & Leadership</button>
     <button class="filter-btn" data-filter="tech">Technical</button>
     <button class="filter-btn" data-filter="life">Life & Misc</button>
@@ -80,9 +81,9 @@
 
 <script src="js/posts.js"></script>
 <script>
-  const CATEGORY_LABELS = { tpm: 'TPM & Leadership', tech: 'Technical', life: 'Life & Misc' };
-  const BANNER_CLASSES  = { tpm: 'banner-tpm', tech: 'banner-tech', life: 'banner-life' };
-  const CAT_CLASSES     = { tpm: 'cat-tpm', tech: 'cat-tech', life: 'cat-life' };
+  const CATEGORY_LABELS = { ai: 'AI & ML', tpm: 'TPM & Leadership', tech: 'Technical', life: 'Life & Misc' };
+  const BANNER_CLASSES  = { ai: 'banner-ai', tpm: 'banner-tpm', tech: 'banner-tech', life: 'banner-life' };
+  const CAT_CLASSES     = { ai: 'cat-ai', tpm: 'cat-tpm', tech: 'cat-tech', life: 'cat-life' };
 
   function renderPosts() {
     const grid = document.getElementById('posts-grid');

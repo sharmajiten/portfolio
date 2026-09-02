@@ -100,7 +100,7 @@
 
 <nav>
   <div class="nav-inner">
-    <a href="index.html" class="nav-logo">jiten<span>.</span></a>
+    <a href="index.html" class="nav-logo">jiten<span>.</span><span class="nav-ai-badge">AI TPM</span></a>
     <ul class="nav-links">
       <li><a href="index.html">Experience</a></li>
       <li><a href="blog.html">Blog</a></li>
@@ -125,6 +125,7 @@
       <div class="field">
         <label for="category-input">Category</label>
         <select id="category-input">
+          <option value="ai">AI & ML</option>
           <option value="tpm">TPM & Leadership</option>
           <option value="tech">Technical</option>
           <option value="life">Life & Misc</option>
@@ -219,9 +220,9 @@ Use **bold**, *italic*, and `code` inline."></textarea>
 </footer>
 
 <script>
-  const CATEGORY_LABELS = { tpm: 'TPM & Leadership', tech: 'Technical', life: 'Life & Misc' };
-  const BANNER_CLASSES  = { tpm: 'banner-tpm', tech: 'banner-tech', life: 'banner-life' };
-  const CAT_CLASSES     = { tpm: 'cat-tpm', tech: 'cat-tech', life: 'cat-life' };
+  const CATEGORY_LABELS = { ai: 'AI & ML', tpm: 'TPM & Leadership', tech: 'Technical', life: 'Life & Misc' };
+  const BANNER_CLASSES  = { ai: 'banner-ai', tpm: 'banner-tpm', tech: 'banner-tech', life: 'banner-life' };
+  const CAT_CLASSES     = { ai: 'cat-ai', tpm: 'cat-tpm', tech: 'cat-tech', life: 'cat-life' };
 
   const titleInput    = document.getElementById('title-input');
   const categoryInput = document.getElementById('category-input');

@@ -349,6 +349,19 @@ section { margin-bottom: 5rem; }
 .tag-green { border-color: rgba(74,222,128,.25);  color: var(--accent-green);  background: rgba(74,222,128,.06); }
 .tag-purple{ border-color: rgba(192,132,252,.25); color: var(--accent-purple); background: rgba(192,132,252,.06); }
 .tag-orange{ border-color: rgba(251,146,60,.25);  color: var(--accent-orange); background: rgba(251,146,60,.06); }
+.tag-cyan  { border-color: rgba(34,211,238,.3);   color: var(--accent-cyan);   background: rgba(34,211,238,.08); }
+
+/* ── NAV AI BADGE ── */
+.nav-ai-badge {
+  font-family: var(--mono); font-size: .62rem; font-weight: 700;
+  letter-spacing: .12em; text-transform: uppercase;
+  color: var(--accent-cyan);
+  background: rgba(34,211,238,.08);
+  border: 1px solid rgba(34,211,238,.28);
+  padding: .2rem .55rem; border-radius: 4px;
+  margin-left: .6rem;
+}
+@media (max-width: 640px) { .nav-ai-badge { display: none; } }
 
 /* ── SKILLS GRID ── */
 .skills-grid {
@@ -434,6 +447,7 @@ section { margin-bottom: 5rem; }
 }
 
 /* Category-specific banner gradients */
+.banner-ai     { background: linear-gradient(135deg, #04191c 0%, #0a3a40 40%, #082b2f 100%); }
 .banner-tpm    { background: linear-gradient(135deg, #060e1c 0%, #0a1f3d 40%, #081529 100%); }
 .banner-tech   { background: linear-gradient(135deg, #08061c 0%, #1a0a3d 40%, #100828 100%); }
 .banner-life   { background: linear-gradient(135deg, #07160a 0%, #0d2e18 40%, #082010 100%); }
@@ -482,6 +496,7 @@ section { margin-bottom: 5rem; }
   font-size: .68rem; font-weight: 700; text-transform: uppercase;
   letter-spacing: .09em; padding: .2rem .55rem; border-radius: 4px;
 }
+.cat-ai      { background: rgba(34,211,238,.1);  color: var(--accent-cyan); }
 .cat-tpm     { background: rgba(77,158,255,.1);  color: var(--accent); }
 .cat-tech    { background: rgba(192,132,252,.1); color: var(--accent-purple); }
 .cat-life    { background: rgba(74,222,128,.1);  color: var(--accent-green); }
