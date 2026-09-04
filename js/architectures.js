@@ -190,4 +190,81 @@ const ARCHITECTURES = [
       },
     ],
   },
+
+  {
+    id: 'transformer',
+    emoji: '🤖',
+    title: 'Transformer / LLM',
+    cardDesc: 'Self-attention, feed-forward, the LM head, and next-token sampling.',
+    status: 'live',
+    stageTitle: '🤖 Transformer — Self-Attention, Feed-Forward & the LM Head',
+    viewBox: '0 0 860 420',
+    nodes: [
+      { id: 'node-input',  x: 8,   y: 56,  w: 126, h: 84, icon: '📝', label: 'Input Tokens',  sub: '"The cat sat →"' },
+      { id: 'node-embed',  x: 200, y: 56,  w: 150, h: 84, icon: '🔤', label: 'Embedding',     sub: 'Token + Positional' },
+      { id: 'node-attn',   x: 416, y: 56,  w: 150, h: 84, icon: '🎯', label: 'Self-Attention', sub: 'Masked · Multi-Head' },
+      { id: 'node-norm1',  x: 632, y: 56,  w: 150, h: 84, icon: '🧮', label: 'Add & Norm',    sub: 'Residual + LayerNorm' },
+      { id: 'node-ffn',    x: 632, y: 300, w: 150, h: 84, icon: '⚙️', label: 'Feed-Forward',  sub: 'MLP · GELU ×4d' },
+      { id: 'node-norm2',  x: 416, y: 300, w: 150, h: 84, icon: '🧮', label: 'Add & Norm',    sub: 'Residual + LayerNorm' },
+      { id: 'node-lmhead', x: 200, y: 300, w: 150, h: 84, icon: '🎓', label: 'LM Head',       sub: 'Linear → Vocab' },
+      { id: 'node-output', x: 8,   y: 300, w: 126, h: 84, icon: '🎲', label: 'Next Token',    sub: 'Softmax · Sampling' },
+    ],
+    edges: [
+      { id: 'edge-0', d: 'M 134 98 L 200 98' },
+      { id: 'edge-1', d: 'M 350 98 L 416 98' },
+      { id: 'edge-2', d: 'M 566 98 L 632 98' },
+      { id: 'edge-3', d: 'M 707 140 L 707 300' },
+      { id: 'edge-4', d: 'M 632 342 L 566 342' },
+      { id: 'edge-5', d: 'M 416 342 L 350 342' },
+      { id: 'edge-6', d: 'M 200 342 L 134 342' },
+      { id: 'edge-7', d: 'M 71 300 L 71 220 L 491 220 L 491 140' },
+    ],
+    steps: [
+      {
+        node: 'node-input', edge: null, from: null, to: null, num: 1,
+        label: 'Tokens go in',
+        desc: '<strong>Input Tokens</strong> — The prompt (e.g. <code>"The cat sat"</code>) is broken into subword tokens by a tokenizer (BPE / SentencePiece) and mapped to integer IDs. The model only ever sees numbers — never raw text.',
+      },
+      {
+        node: 'node-embed', edge: 'edge-0', from: 'node-input', to: 'node-embed', num: 2,
+        label: 'Embed + add position',
+        desc: '<strong>Embedding</strong> — Each token ID is looked up in a learned embedding table, producing a dense vector. Since self-attention has no built-in sense of order, a positional signal (learned, sinusoidal, or rotary — RoPE) is added so the model knows token <em>i</em> came before token <em>i+1</em>.',
+      },
+      {
+        node: 'node-attn', edge: 'edge-1', from: 'node-embed', to: 'node-attn', num: 3,
+        label: 'Self-attention looks around',
+        desc: '<strong>Masked Self-Attention</strong> — Each token projects to a <strong>Query</strong>, <strong>Key</strong>, and <strong>Value</strong>. Attention scores <code>softmax(QKᵀ / √d)</code> decide how much every token should "attend to" every earlier token. A <strong>causal mask</strong> blocks it from peeking at future tokens. Multiple heads run this in parallel, each learning a different kind of relationship (syntax, coreference, position).',
+      },
+      {
+        node: 'node-norm1', edge: 'edge-2', from: 'node-attn', to: 'node-norm1', num: 4,
+        label: 'Residual + normalize',
+        desc: '<strong>Add & Norm</strong> — The attention output is added back to its own input (a <strong>residual connection</strong>, so gradients can flow straight through even in very deep networks) and passed through <strong>LayerNorm</strong> to keep activations stable across dozens of stacked layers.',
+      },
+      {
+        node: 'node-ffn', edge: 'edge-3', from: 'node-norm1', to: 'node-ffn', num: 5,
+        label: 'Feed-forward transform',
+        desc: '<strong>Feed-Forward Network</strong> — A position-wise MLP applied identically to every token: project up to ~4× the hidden size, apply a nonlinearity (GELU / SiLU), then project back down. Attention mixes information <em>between</em> tokens; the FFN transforms each token\'s representation <em>independently</em>.',
+      },
+      {
+        node: 'node-norm2', edge: 'edge-4', from: 'node-ffn', to: 'node-norm2', num: 6,
+        label: 'Residual + normalize again',
+        desc: '<strong>Add & Norm</strong> — Same pattern as before: residual connection around the FFN, then LayerNorm. This attention → FFN pair is <strong>one transformer block</strong> — a real LLM stacks dozens to a hundred-plus of these (GPT-3: 96 layers) before reaching the head.',
+      },
+      {
+        node: 'node-lmhead', edge: 'edge-5', from: 'node-norm2', to: 'node-lmhead', num: 7,
+        label: 'Project to vocabulary',
+        desc: '<strong>LM Head</strong> — The final hidden state (often only from the <em>last</em> token position) passes through one more linear layer projecting from the hidden dimension out to the full vocabulary size (30K–200K+ logits) — one raw score per possible next token. This layer\'s weights are frequently <strong>tied</strong> to the input embedding table.',
+      },
+      {
+        node: 'node-output', edge: 'edge-6', from: 'node-lmhead', to: 'node-output', num: 8,
+        label: 'Sample the next token',
+        desc: '<strong>Softmax + Sampling</strong> — <code>softmax</code> turns the logits into a probability distribution over the vocabulary. A decoding strategy then picks the next token: <strong>greedy</strong> (highest probability), or <strong>temperature / top-k / top-p (nucleus)</strong> sampling for more varied, natural output.',
+      },
+      {
+        node: 'node-attn', edge: 'edge-7', from: 'node-output', to: 'node-attn', num: 9,
+        label: 'Append token → repeat',
+        desc: '<strong>Autoregressive Loop</strong> — The sampled token is appended to the sequence and the whole model runs again to predict the <em>next</em> one — one token at a time, each pass re-attending to everything generated so far. This repeats until an end-of-sequence token or a length limit stops it.',
+      },
+    ],
+  },
 ];
