@@ -126,27 +126,6 @@ const POSTS = [
     `
   },
   {
-    title: "The Board Games That Made Me a Better Decision-Maker",
-    category: "life",
-    date: "Feb 10, 2026",
-    excerpt: "Pandemic, Power Grid, and Spirit Island aren't just games — they're simulators for resource constraints, coalition-building, and asymmetric information.",
-    readTime: "4 min read",
-    emoji: "🎲",
-    featured: false,
-    content: `
-      <p>I came to board games late — mid-twenties, dragged to a game night by a coworker, expecting something like Monopoly. What I found instead were games that modeled the same problems I was fighting at work, with the stakes low enough to actually experiment.</p>
-      <h3>Pandemic: Coalition Under Pressure</h3>
-      <p>Pandemic is a cooperative game where players fight four simultaneous disease outbreaks with limited actions per turn. The mechanic that always gets me: the game accelerates. The more outbreaks you've had, the faster new ones cascade. This is exactly what happens to technical debt and incident response under an immature system. Pandemic taught me to invest in stability early, even when the immediate threat seems manageable.</p>
-      <p>It also taught me something about team dynamics: the optimal play in Pandemic usually requires one person to see the whole board and coordinate, but no one has formal authority. The teams that win are the ones who've learned to quickly align on a shared mental model without getting stuck in debate. Sound familiar?</p>
-      <h3>Power Grid: Resource Constraints and Timing</h3>
-      <p>Power Grid is a resource management game about building energy infrastructure. The critical insight: the player in last place gets to buy resources first. This turn-order mechanic punishes runaway leaders and keeps the game competitive. In product strategy, this maps to the importance of timing — being first isn't always best. Sometimes being second, with better information, is the winning move.</p>
-      <h3>Spirit Island: Asymmetric Roles</h3>
-      <p>Spirit Island gives each player a radically different set of powers that don't fully overlap. No single spirit can win alone. Success requires understanding what your teammates can and can't do, and designing combined plays that exploit the gaps. This is TPM work in miniature: you're rarely the best at any individual function, but you're uniquely positioned to see where the team's capabilities don't line up with what the project needs.</p>
-      <h3>The Real Lesson</h3>
-      <p>Games are safe environments to make expensive mistakes. I've learned more about coalition-building, resource prioritization, and decision-making under uncertainty from a Saturday afternoon of board games than from most management books — because games give you immediate feedback, and feedback is how learning actually happens.</p>
-    `
-  },
-  {
     title: "Writing RFCs That Engineers Actually Read",
     category: "tpm",
     date: "Jan 22, 2026",

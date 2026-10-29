@@ -826,5 +826,6 @@ footer a:hover { color: var(--accent); }
 @media (max-width: 640px) {
   .hero { padding: 3rem 0 2rem; }
   .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .stats-grid .stat-card:last-child:nth-child(odd) { grid-column: 1 / -1; }
   .skills-grid { grid-template-columns: 1fr; }
 }
