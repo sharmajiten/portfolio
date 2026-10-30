@@ -44,7 +44,7 @@
     <div class="hero-cta">
       <a href="#experience" class="btn btn-primary">View Experience ↓</a>
       <a href="resume.html" class="btn btn-secondary">Resume ↓</a>
-      <a href="mailto:sharmajiten12@gmail.com" class="btn btn-secondary">Get in touch</a>
+      <a href="#contact" class="btn btn-secondary">Get in touch</a>
     </div>
   </section>
 
@@ -372,7 +372,8 @@
         exchange notes on applied AI program management — my inbox is open.
       </p>
       <div style="display:flex; gap:1rem; flex-wrap:wrap; align-items:center;">
-        <a href="mailto:sharmajiten12@gmail.com" class="btn btn-primary">sharmajiten12@gmail.com</a>
+        <a href="https://mail.google.com/mail/?view=cm&amp;fs=1&amp;to=sharmajiten12@gmail.com" target="_blank" rel="noopener" class="btn btn-primary">Email me via Gmail ↗</a>
+        <button type="button" class="btn btn-secondary" id="copy-email" data-email="sharmajiten12@gmail.com">Copy sharmajiten12@gmail.com</button>
         <a href="tel:4088231116" class="btn btn-secondary">408-823-1116</a>
         <a href="https://linkedin.com" target="_blank" class="btn btn-secondary">LinkedIn ↗</a>
       </div>
@@ -384,6 +385,21 @@
 <footer>
   <p>Jiten Sharma · San Jose, CA &nbsp;·&nbsp; <a href="mailto:sharmajiten12@gmail.com">sharmajiten12@gmail.com</a></p>
 </footer>
+
+<script>
+  document.getElementById('copy-email').addEventListener('click', async (e) => {
+    const btn = e.currentTarget;
+    const email = btn.dataset.email;
+    try {
+      await navigator.clipboard.writeText(email);
+      btn.textContent = 'Copied ✓';
+    } catch {
+      window.location.href = 'mailto:' + email;
+      return;
+    }
+    setTimeout(() => { btn.textContent = 'Copy ' + email; }, 2000);
+  });
+</script>
 
 </body>
 </html>
